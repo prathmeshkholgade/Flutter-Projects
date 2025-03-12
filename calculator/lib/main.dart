@@ -32,12 +32,8 @@ class _MyHomePageState extends State<MyHomePage> {
   double num2 = 0;
   String _operator = "";
   String expression = "";
-
   void buttonPressed(String buttonText) {
     setState(() {
-      // if (buttonText == "1") {
-      //   buttonText = "2";
-      // }
       if (buttonText == "CLEAR") {
         output = "0";
         _output = "0";
@@ -51,10 +47,10 @@ class _MyHomePageState extends State<MyHomePage> {
           buttonText == "x") {
         num1 = double.parse(output);
         _operator = buttonText;
-        expression = "$output $_operator"; // Show operator immediately
+        expression = "$output $_operator"; //  operator immediately
+        output = expression;
         _output = "";
       } else if (buttonText == "=") {
-        print(num1);
         num2 = double.parse(output);
         String formattedNum1 =
             (num1 == num1.truncate())
@@ -66,9 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 : num2.toString();
         expression =
             "$formattedNum1 $_operator $formattedNum2 ="; // Update expression
-
         if (_operator == "+") {
-          print("button is pressed");
           _output = (num1 + num2).toString();
         } else if (_operator == "-") {
           _output = (num1 - num2).toString();
@@ -86,7 +80,9 @@ class _MyHomePageState extends State<MyHomePage> {
         expression += buttonText; // Update expression in real-time
       }
 
-      output = double.parse(_output).toStringAsFixed(0);
+      if (_output.isNotEmpty) {
+        output = double.tryParse(_output)?.toStringAsFixed(0) ?? _output;
+      }
     });
   }
 
