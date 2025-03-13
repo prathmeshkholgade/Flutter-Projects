@@ -30,6 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
   double _height = 150;
   int _weight = 60;
   int _age = 25;
+  String gender = "";
 
   void _calculateBMI() {
     double bmi = _weight / ((_height / 100) * (_height / 100));
@@ -49,7 +50,6 @@ class _MyHomePageState extends State<MyHomePage> {
           "You have a lower than normal body weight. You can eat a bit more!";
     }
 
-    // Navigate to Result Screen
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -74,49 +74,57 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  width: 150,
-                  height: 130,
-                  color: Colors.blueGrey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.male,
-                        size: 40,
-                        color: Colors.white,
-                      ), // Male Icon
-                      const SizedBox(height: 8),
-                      const Text(
-                        "Male",
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                    ],
+                InkWell(
+                  onTap: () => {print("btn is pressed")},
+                  child: Container(
+                    width: 150,
+                    height: 130,
+                    color: Colors.blueGrey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.male,
+                          size: 40,
+                          color: Colors.white,
+                        ), // Male Icon
+                        const SizedBox(height: 8),
+                        const Text(
+                          "Male",
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                Container(
-                  width: 150,
-                  height: 130,
-                  color: Colors.blueGrey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.female,
-                        size: 40,
-                        color: Colors.white,
-                      ), // Female Icon
-                      const SizedBox(height: 8),
-                      const Text(
-                        "Female",
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                    ],
+
+                InkWell(
+                  onTap: () => {print("btn is pressed")},
+                  child: Container(
+                    width: 150,
+                    height: 130,
+                    color: Colors.blueGrey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.female,
+                          size: 40,
+                          color: Colors.white,
+                        ), // Female Icon
+                        const SizedBox(height: 8),
+                        const Text(
+                          "Female",
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
             ),
             SizedBox(height: 40),
+
             Container(
               height: 120,
               width: double.infinity,
@@ -325,7 +333,6 @@ class ResultScreen extends StatelessWidget {
         ),
       ),
 
-      // Bottom Navigation for "RE-CALCULATE"
       bottomNavigationBar: BottomAppBar(
         color: Colors.red,
         shape: const CircularNotchedRectangle(),
