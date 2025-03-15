@@ -1,152 +1,143 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Todo List'),
-    );
+    return MaterialApp(home: MyHomePage(), debugShowCheckedModeBanner: false);
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyHomePage> createState() => MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  TextEditingController inputTaskController = TextEditingController();
-  TextEditingController searchTextController = TextEditingController();
+class MyHomePageState extends State<MyHomePage> {
   List<Map<String, dynamic>> taskList = [];
-  List<Map<String, dynamic>> filteredTasks = [];
-  bool isTextField = true;
-  bool showSearchField = false;
+  List<Map<String, dynamic>> filteredList = [];
+  bool inputTask = true;
+  bool searchInput = false;
+  TextEditingController inputController = TextEditingController();
+  TextEditingController searchController = TextEditingController();
+
   void initState() {
     super.initState();
-    filteredTasks = List.from(taskList);
+    filteredList = List.from(taskList);
+    print(filteredList);
+    print("it runs when frist time page rendered");
   }
 
-  void filteredTask(String query) {
-    print("Filter function called with value: $query");
+  void addTask() async {
+    print(inputController.text);
+    var task = inputController.text.toString();
+    if (task.isNotEmpty) {
+      taskList.add({"title": task, "isCompleted": false});
+    }
+    inputController.clear();
+    filteredList = List.from(taskList);
+    print(taskList);
+    setState(() {});
+  }
+
+  void filterTask(String value) {
+    print(searchController.text);
     setState(() {
-      if (query.isEmpty) {
-        filteredTasks = List.from(taskList);
+      if (value.isEmpty) {
+        filteredList = List.from(taskList);
       } else {
-        filteredTasks =
+        filteredList =
             taskList
                 .where(
                   (task) =>
-                      task["title"].toLowerCase().contains(query.toLowerCase()),
+                      task["title"].toLowerCase().contains(value.toLowerCase()),
                 )
                 .toList();
+        print(filteredList);
       }
     });
-  }
-
-  void addTask() {
-    print(inputTaskController.text);
-    if (inputTaskController.text.isNotEmpty) {
-      setState(() {
-        taskList.add({"title": inputTaskController.text, "isCompleted": false});
-        inputTaskController.clear();
-        isTextField = false;
-        // filteredTasks = List.from(taskList);
-        filteredTask("");
-      });
-      print("Task List Length: ${taskList.length}");
-      print(taskList);
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-
-        title: Text(widget.title),
-      ),
+      appBar: AppBar(title: Text("Todo List")),
       body: Container(
         child: Column(
           children: [
-            if (isTextField)
+            if (inputTask)
               Padding(
-                padding: EdgeInsets.all(21),
+                padding: EdgeInsets.all(15),
                 child: Row(
                   children: [
                     Expanded(
                       child: TextField(
-                        controller: inputTaskController,
+                        controller: inputController,
                         decoration: InputDecoration(
-                          hintText: "Enter Task",
                           border: OutlineInputBorder(),
+                          hintText: "Enter Task",
                         ),
                       ),
                     ),
                     IconButton(
-                      icon: Icon(Icons.add, color: Colors.green),
                       onPressed: () {
                         addTask();
                       },
+                      icon: Icon(Icons.add, color: Colors.blue),
                     ),
                   ],
                 ),
               ),
-            if (showSearchField)
+            //search text input
+            if (searchInput)
               Padding(
-                padding: EdgeInsets.all(21),
+                padding: EdgeInsets.all(15),
                 child: Row(
                   children: [
                     Expanded(
                       child: TextField(
-                        controller: searchTextController,
+                        controller: searchController,
                         decoration: InputDecoration(
-                          hintText: "Search Task",
                           border: OutlineInputBorder(),
+                          hintText: "Search Task",
                         ),
                         onChanged: (value) {
                           print(value);
-                          filteredTask(value);
+                          filterTask(value);
                         },
                       ),
                     ),
                     IconButton(
+                      onPressed: () {
+                        // filterTask();
+                      },
                       icon: Icon(Icons.search, color: Colors.blue),
-                      onPressed: () {},
                     ),
                   ],
                 ),
               ),
+            //task list will placed here
             Expanded(
               child: ListView.builder(
-                itemCount: filteredTasks.length,
+                itemCount: filteredList.length,
                 itemBuilder: (context, index) {
                   return ListTile(
                     leading: Checkbox(
-                      value: filteredTasks[index]["isCompleted"],
-                      onChanged: (bool? value) {
+                      value: filteredList[index]["isCompleted"],
+                      onChanged: (value) {
                         setState(() {
-                          filteredTasks[index]["isCompleted"] = value!;
+                          filteredList[index]["isCompleted"] = value!;
                         });
                       },
                     ),
                     title: Text(
-                      filteredTasks[index]["title"],
+                      filteredList[index]["title"],
                       style: TextStyle(
                         decoration:
-                            filteredTasks[index]["isCompleted"]
+                            filteredList[index]["isCompleted"]
                                 ? TextDecoration.lineThrough
                                 : TextDecoration.none,
                       ),
@@ -154,9 +145,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     trailing: IconButton(
                       onPressed: () {
                         setState(() {
-                          print("u deleted  $index num task");
                           taskList.removeAt(index);
-                          filteredTask("");
+                          filterTask("");
                         });
                       },
                       icon: Icon(Icons.delete, color: Colors.red),
@@ -168,21 +158,20 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+
       bottomNavigationBar: BottomAppBar(
-        color: Colors.green[100],
         child: Container(
-          height: 40,
+          height: 10,
           child: Row(
             children: [
               Icon(Icons.menu),
-              SizedBox(width: 10),
               Text("Todo"),
               Expanded(child: Divider()),
               IconButton(
                 onPressed: () {
                   setState(() {
-                    showSearchField = !showSearchField;
-                    isTextField = false;
+                    searchInput = !searchInput;
+                    inputTask = false;
                   });
                 },
                 icon: Icon(Icons.search, color: Colors.blue),
@@ -194,12 +183,11 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
-            isTextField = !isTextField;
-            showSearchField = false;
-            print(isTextField);
+            inputTask = !inputTask;
+            searchInput = false;
           });
         },
-        child: const Icon(Icons.add),
+        child: Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );

@@ -1,39 +1,33 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'BMI Calculator',
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
-      home: const MyHomePage(title: 'BMI CALCULATOR'),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
-
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyHomePage> createState() => MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  double _height = 150;
-  int _weight = 60;
-  int _age = 25;
-  String gender = "";
-
-  void _calculateBMI() {
-    double bmi = _weight / ((_height / 100) * (_height / 100));
+class MyHomePageState extends State<MyHomePage> {
+  double height = 140;
+  int weight = 60;
+  int age = 25;
+  String gender = '';
+  @override
+  void calculateBmi() {
+    double bmi = weight / ((height / 100) * (height / 100));
     String category;
     String message;
 
@@ -49,7 +43,6 @@ class _MyHomePageState extends State<MyHomePage> {
       message =
           "You have a lower than normal body weight. You can eat a bit more!";
     }
-
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -60,107 +53,99 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Center(child: Text(widget.title)),
+        backgroundColor: Colors.grey[800],
+        title: Center(child: Text("BMI CACULATOR")),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20),
         child: Column(
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                InkWell(
-                  onTap: () => {print("btn is pressed")},
-                  child: Container(
-                    width: 150,
-                    height: 130,
-                    color: Colors.blueGrey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.male,
-                          size: 40,
-                          color: Colors.white,
-                        ), // Male Icon
-                        const SizedBox(height: 8),
-                        const Text(
-                          "Male",
-                          style: TextStyle(color: Colors.white, fontSize: 18),
-                        ),
-                      ],
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      gender = "male";
+                      print("btn is pressed $gender");
+                    },
+                    child: Container(
+                      height: 140,
+                      color: Colors.grey[800],
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.male, size: 40),
+                          Text("Male", style: TextStyle(fontSize: 21)),
+                        ],
+                      ),
                     ),
                   ),
                 ),
 
-                InkWell(
-                  onTap: () => {print("btn is pressed")},
-                  child: Container(
-                    width: 150,
-                    height: 130,
-                    color: Colors.blueGrey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.female,
-                          size: 40,
-                          color: Colors.white,
-                        ), // Female Icon
-                        const SizedBox(height: 8),
-                        const Text(
-                          "Female",
-                          style: TextStyle(color: Colors.white, fontSize: 18),
-                        ),
-                      ],
+                SizedBox(width: 10),
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      gender = "female";
+                      print("btn is pressed $gender");
+                    },
+                    child: Container(
+                      height: 140,
+                      color: Colors.grey[800],
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.female, size: 40),
+                          Text("Female", style: TextStyle(fontSize: 21)),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
             SizedBox(height: 40),
-
-            Container(
-              height: 120,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.blueGrey,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                children: [
-                  const Text(
-                    "HEIGHT",
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "${_height.toInt()} cm",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+            Column(
+              children: [
+                Column(
+                  children: [
+                    Container(
+                      height: 150,
+                      width: double.infinity,
+                      padding: EdgeInsets.all(5),
+                      color: Colors.grey[800],
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "HEIGHT",
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                          Text(
+                            "${height.toInt()} cm",
+                            style: TextStyle(fontSize: 21),
+                          ),
+                          Slider(
+                            value: height,
+                            min: 100,
+                            max: 220,
+                            inactiveColor: Colors.blue[200],
+                            activeColor: Colors.red,
+                            onChanged: (value) {
+                              setState(() {
+                                height = value;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Slider(
-                    value: _height,
-                    min: 100,
-                    max: 220,
-                    onChanged: (value) {
-                      setState(() {
-                        _height = value; // Update height dynamically
-                      });
-                    },
-                    activeColor: Colors.red,
-                    inactiveColor: Colors.white24,
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              ],
             ),
             SizedBox(height: 40),
             Row(
@@ -168,46 +153,49 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 Container(
                   width: 150,
-                  height: 130,
-                  color: Colors.blueGrey,
+                  height: 120,
+                  color: Colors.grey[800],
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("WEIGHT"),
-                      Text("$_weight", style: TextStyle(fontSize: 21)),
+                      Text("WEIGHT", style: TextStyle(fontSize: 16)),
+                      Text("$weight", style: TextStyle(fontSize: 16)),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Container(
                             width: 45,
                             height: 45,
+
                             decoration: BoxDecoration(
-                              color: Colors.grey, // Background color
-                              shape: BoxShape.circle, // Circular shape
+                              borderRadius: BorderRadius.circular(21),
+                              color: Colors.grey[600],
                             ),
-                            child: FloatingActionButton(
+                            child: IconButton(
                               onPressed: () {
                                 setState(() {
-                                  if (_weight > 1) _weight--;
+                                  if (weight > 1) weight--;
                                 });
                               },
-                              child: Icon(Icons.remove),
+                              icon: Icon(Icons.remove),
                             ),
                           ),
+
                           Container(
                             width: 45,
                             height: 45,
+
                             decoration: BoxDecoration(
-                              color: Colors.grey, // Background color
-                              shape: BoxShape.circle, // Circular shape
+                              borderRadius: BorderRadius.circular(21),
+                              color: Colors.grey[600],
                             ),
-                            child: FloatingActionButton(
+                            child: IconButton(
                               onPressed: () {
                                 setState(() {
-                                  _weight++;
+                                  weight++;
                                 });
                               },
-                              child: Icon(Icons.add),
+                              icon: Icon(Icons.add),
                             ),
                           ),
                         ],
@@ -215,41 +203,52 @@ class _MyHomePageState extends State<MyHomePage> {
                     ],
                   ),
                 ),
-                SizedBox(height: 30),
+
                 Container(
                   width: 150,
-                  height: 130,
-                  color: Colors.blueGrey,
+                  height: 120,
+                  color: Colors.grey[800],
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Age"),
-                      Text("$_age", style: TextStyle(fontSize: 21)),
+                      Text("age", style: TextStyle(fontSize: 16)),
+                      Text("$age", style: TextStyle(fontSize: 16)),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Container(
                             width: 45,
                             height: 45,
-                            child: FloatingActionButton(
+
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(21),
+                              color: Colors.grey[600],
+                            ),
+                            child: IconButton(
                               onPressed: () {
                                 setState(() {
-                                  if (_age > 1) _age--;
+                                  if (age > 1) age--;
                                 });
                               },
-                              child: Icon(Icons.remove),
+                              icon: Icon(Icons.remove),
                             ),
                           ),
+
                           Container(
                             width: 45,
                             height: 45,
-                            child: FloatingActionButton(
+
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(21),
+                              color: Colors.grey[600],
+                            ),
+                            child: IconButton(
                               onPressed: () {
                                 setState(() {
-                                  _age++;
+                                  age++;
                                 });
                               },
-                              child: Icon(Icons.add),
+                              icon: Icon(Icons.add),
                             ),
                           ),
                         ],
@@ -262,22 +261,18 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-
       bottomNavigationBar: BottomAppBar(
-        color: const Color.fromARGB(255, 228, 23, 9), // Red background
-        child: SizedBox(
-          height: 60, // Ensures button takes full height
-          width: double.infinity, // Ensures button takes full width
-          child: ElevatedButton(
-            onPressed: () {
-              _calculateBMI();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-              padding: EdgeInsets.zero,
-            ),
-            child: const Text("CALCULATE", style: TextStyle(fontSize: 21)),
+        color: Colors.red,
+        child: OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+          ),
+          onPressed: () {
+            calculateBmi();
+          },
+          child: Text(
+            "CALCULATE",
+            style: TextStyle(fontSize: 22, color: Colors.white),
           ),
         ),
       ),
@@ -290,58 +285,51 @@ class ResultScreen extends StatelessWidget {
   final String category;
   final String message;
 
-  const ResultScreen({
+  ResultScreen({
     super.key,
     required this.bmi,
     required this.category,
     required this.message,
   });
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Your Result")),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // BMI Category
-            Text(
-              category.toUpperCase(),
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.teal,
+      appBar: AppBar(title: Text("Your Result")),
+      body: Padding(
+        padding: EdgeInsets.all(20),
+        child: Container(
+          color: Colors.grey[900],
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text(
+                category,
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-            ),
-            const SizedBox(height: 25),
-
-            // BMI Value
-            Text(
-              bmi.toStringAsFixed(1),
-              style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 45),
-
-            // Message
-            Text(
-              message,
-              style: TextStyle(fontSize: 18, color: Colors.white70),
-              textAlign: TextAlign.center,
-            ),
-          ],
+              Text(
+                bmi.toStringAsFixed(1),
+                style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),
+              ),
+              Padding(
+                padding: EdgeInsets.all(15),
+                child: Center(
+                  child: Text(
+                    message,
+                    style: TextStyle(fontSize: 18, color: Colors.white70),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-
       bottomNavigationBar: BottomAppBar(
         color: Colors.red,
-        shape: const CircularNotchedRectangle(),
+        // shape: CircularNotchedRectangle(),
         child: SizedBox(
-          height: 20,
+          height: 15,
           child: InkWell(
-            onTap: () {
-              Navigator.pop(context); // Go back
-            },
+            onTap: () => {Navigator.pop(context)},
             child: Center(
               child: Text(
                 "RE-CALCULATE",
